@@ -1,1 +1,1 @@
-# cifar10_softmax
+# Two-layer Perceptron for CIFAR10
