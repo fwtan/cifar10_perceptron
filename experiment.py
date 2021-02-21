@@ -9,7 +9,7 @@ from sacred.utils import apply_backspaces_and_linefeeds
 from model.ingredient import model_ingredient, get_model
 from utils import load_data, pickle_save
 
-ex = sacred.Experiment('CIFAR10 Softmax', ingredients=[model_ingredient])
+ex = sacred.Experiment('CIFAR10 Perceptron', ingredients=[model_ingredient])
 # Filter backspaces and linefeeds
 SETTINGS.CAPTURE_MODE = 'sys'
 ex.captured_out_filter = apply_backspaces_and_linefeeds
