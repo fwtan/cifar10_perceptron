@@ -1,0 +1,13 @@
+
+
+# experiment 1
+python experiment.py -F outputs/exp1 with temp_dir=outputs/exp1 model.model500 
+
+# experiment 2 with a different model configuration
+python experiment.py -F outputs/exp2 with temp_dir=outputs/exp1 model.model600 
+
+# experiment 3 that is essentially the same as experiment 2
+python experiment.py -F outputs/exp3 with temp_dir=outputs/exp3 model.hidden_size=600
+
+# experiment 4 using a different learning rate
+python experiment.py -F outputs/exp4 with temp_dir=outputs/exp4 lr=0.0005
