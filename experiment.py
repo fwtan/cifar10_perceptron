@@ -28,23 +28,39 @@ def config():
 
 @ex.automain
 def main(epochs, bsize, lr, lr_decay, weight_decay, temp_dir, seed):
+    #############################################################
     # seeding the experiment is a good practice
     np.random.seed(seed)
     random.seed(seed)
+    #############################################################
     
-    # create the model and yes you do NOT need to provide any arguments here (sacred will do that for you)
+    #############################################################
+    # create the model
+    # and yes you do NOT need to provide any arguments here 
+    # (sacred will do that for you)
     model = get_model()
+    #############################################################
     
+    #############################################################
     # load the data
-    X_train, y_train, X_val, y_val, X_test, y_test = load_data(osp.join('data', 'cifar-10-batches-py'))
+    X_train, y_train, X_val, y_val, X_test, y_test = \
+        load_data(osp.join('data', 'cifar-10-batches-py'))
+    #############################################################
     
+    #############################################################
     # the best checkpoint
-    save_name = osp.join(temp_dir, '{}.pt'.format(ex.current_run.config['model']['name']))
     os.makedirs(temp_dir, exist_ok=True)
-    best_val = (0, {'val_acc': float('-inf'), 'train_loss': float('inf')}, model.state_dict())
+    save_name = osp.join(temp_dir, '{}.pt'.\
+        format(ex.current_run.config['model']['name']))
+    best_val = (0, 
+            {'val_acc': float('-inf'), 'train_loss': float('inf')}, 
+            model.state_dict())
+    #############################################################
     
     for epoch in range(epochs):
-        res = model.train_one_epoch(X_train, y_train, X_val, y_val, learning_rate=lr, reg=weight_decay, batch_size=bsize, verbose=True)
+        res = model.train_one_epoch(X_train, y_train, X_val, y_val, 
+            learning_rate=lr, reg=weight_decay, batch_size=bsize, verbose=True)
+
         train_loss = np.mean(res['loss_history'])
         val_acc = res['val_acc']
 
@@ -63,11 +79,15 @@ def main(epochs, bsize, lr, lr_decay, weight_decay, temp_dir, seed):
             best_val = (epoch + 1, res, deepcopy(model.state_dict()))
             pickle_save(save_name, model.state_dict())
     
+    #############################################################
+    # use the best checkpoint, evaluate on the test set
     model.params = best_val[2]
     test_acc = (model.predict(X_test) == y_test).mean() 
     print('Test acc: %f'%(test_acc))
+    #############################################################
 
-    # final logging
+    #############################################################
+    # wrap up
     ex.info['test_acc'] = test_acc
     ex.add_artifact(save_name)
 

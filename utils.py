@@ -8,6 +8,9 @@ def pickle_load(path):
         try:
             data_ = pickle.load(fid)
         except:
+            # in case the pickle file was created 
+            # by the prehistoric Python 2.7, 
+            # which is the case for CIFAR 10 indeed
             fid.seek(0)
             data_ = pickle.load(fid, encoding='latin1')
     return data_
